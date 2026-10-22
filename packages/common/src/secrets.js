@@ -43,8 +43,8 @@ export function resolveSecret(name, envVar) {
 /** Constant-time string comparison (length-independent via hashing). */
 export function safeEqual(a, b) {
   if (typeof a !== 'string' || typeof b !== 'string') return false;
-  const ha = crypto.createHash('sha256').update(a).digest();
-  const hb = crypto.createHash('sha256').update(b).digest();
+  const ha = crypto.scryptSync(a, 'youpi_safe_equal_salt_v1', 32);
+  const hb = crypto.scryptSync(b, 'youpi_safe_equal_salt_v1', 32);
   return crypto.timingSafeEqual(ha, hb);
 }
 
@@ -346,7 +346,7 @@ const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
 const consumedOAuthStates = new Map();
 
 function oauthStateMac(payload) {
-  return crypto.createHmac('sha256', getObserverToken()).update(`oauth-state:${payload}`).digest('hex');
+  return crypto.scryptSync(`oauth-state:${payload}`, getObserverToken(), 32).toString('hex');
 }
 
 /**
