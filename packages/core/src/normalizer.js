@@ -64,7 +64,7 @@ const REFERENCE_REGEX = /(?:utr|ref(?:\s*no\.?)?|txn(?:\s*(?:id|#))?|transaction
  * Regex for extracting sender VPA if present in notification text.
  * Matches: from user@upi, from 9876543210@paytm, from Rahul (UPI ID: rahul@fam), etc.
  */
-const SENDER_VPA_REGEX = /(?:from|by|vpa|upi\s*id)[\s:]+(?:[a-zA-Z]{1,30}(?:\s+[a-zA-Z]{1,30})*\s*[\(\[])?([a-zA-Z0-9.\-_]{2,100}@[a-zA-Z0-9.\-_]{2,64})/i;
+const SENDER_VPA_REGEX = /(?:from|by|vpa|upi\s*id)[\s:]+([a-zA-Z0-9.\-_]{2,100}@[a-zA-Z0-9.\-_]{2,64})/i;
 
 export class ObservationNormalizer {
   /**

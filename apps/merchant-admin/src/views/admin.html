@@ -3800,6 +3800,17 @@
       return escapeAttribute(literal);
     }
 
+    function sanitizeImageUrl(url) {
+      if (!url || typeof url !== 'string') return '';
+      try {
+        const parsed = new URL(url.trim(), window.location.href);
+        if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+          return parsed.href;
+        }
+      } catch {}
+      return '';
+    }
+
     // --- REAL LIGHT / DARK THEME CONTROLLER ---
     const THEME_KEY = 'youpi-theme';
     const themeMQ = window.matchMedia('(prefers-color-scheme: dark)');
@@ -4718,15 +4729,6 @@
           const darkAccent = adjustHexColor(primaryColor, -25);
           headerEl.style.background = `linear-gradient(180deg, ${primaryColor} 0%, ${darkAccent} 100%)`;
         }
-      }
-
-      function sanitizeImageUrl(url) {
-        if (!url || typeof url !== 'string') return '';
-        const trimmed = url.trim();
-        if (/^(https?:|\/|data:image\/)/i.test(trimmed)) {
-          return trimmed;
-        }
-        return '';
       }
 
       const avatarLetter = document.getElementById('mockupAvatarLetter');
