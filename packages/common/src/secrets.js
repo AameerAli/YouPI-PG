@@ -43,8 +43,8 @@ export function resolveSecret(name, envVar) {
 /** Constant-time string comparison (length-independent via hashing). */
 export function safeEqual(a, b) {
   if (typeof a !== 'string' || typeof b !== 'string') return false;
-  const ha = crypto.scryptSync(a, 'youpi_safe_equal_salt_v1', 32);
-  const hb = crypto.scryptSync(b, 'youpi_safe_equal_salt_v1', 32);
+  const ha = crypto.createHash('sha256').update(a).digest();
+  const hb = crypto.createHash('sha256').update(b).digest();
   return crypto.timingSafeEqual(ha, hb);
 }
 
