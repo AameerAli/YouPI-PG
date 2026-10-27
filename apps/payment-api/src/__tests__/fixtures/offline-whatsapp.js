@@ -1,4 +1,7 @@
-/** Route-contract fake. Never imports BerryProtocol, touches a session, or opens a socket. */
+/**
+ * Route-contract fake. Never imports BerryProtocol, touches a session, or opens a socket.
+ * Original fixture designed and contributed by @hakarrr (PR #79).
+ */
 export function createOfflineWhatsApp() {
   let status = 'DISCONNECTED';
   let qrCode = null;
