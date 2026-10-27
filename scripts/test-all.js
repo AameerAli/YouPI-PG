@@ -1,5 +1,7 @@
 import { spawnSync } from 'node:child_process';
 
+const PER_SUITE_TIMEOUT_MS = 120_000; // 2 min per suite; fails fast if a test hangs
+
 const testFiles = [
   'packages/common/src/__tests__/common.test.js',
   'packages/db/src/__tests__/customer-reset.test.js',
@@ -47,6 +49,7 @@ const testFiles = [
 console.log('============================================================');
 console.log('🧪 YOUPI PG V2 — FULL REGRESSION TEST RUNNER');
 console.log(`Running ${testFiles.length} curated test suites...`);
+console.log(`Per-suite timeout: ${PER_SUITE_TIMEOUT_MS / 1000}s`);
 console.log('============================================================\n');
 
 let passedCount = 0;
@@ -65,10 +68,19 @@ for (let i = 0; i < testFiles.length; i++) {
       SKIP_FLAKY_TEST_4_1: process.env.SKIP_FLAKY_TEST_4_1 || '',
       YOUPI_ALLOW_PRIVATE_WEBHOOKS: 'true'
     },
-    encoding: 'utf8'
+    encoding: 'utf8',
+    timeout: PER_SUITE_TIMEOUT_MS,
+    killSignal: 'SIGKILL'
   });
 
   const duration = ((Date.now() - startFile) / 1000).toFixed(2);
+
+  if (result.error && result.error.code === 'ETIMEDOUT') {
+    console.log(`⏱️  TIMEOUT after ${duration}s — test process killed (this suite hangs in CI)`);
+    console.log(`   Hanging suite: ${file}`);
+    if (result.stderr) console.log(`   stderr (last 500 chars):\n   ${result.stderr.slice(-500).replace(/\n/g, '\n   ')}`);
+    process.exit(1);
+  }
 
   if (result.status === 0) {
     passedCount++;
