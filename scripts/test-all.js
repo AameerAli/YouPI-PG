@@ -62,7 +62,9 @@ for (let i = 0; i < testFiles.length; i++) {
     env: {
       ...process.env,
       YOUPI_MODE: 'localhost',
-      NODE_ENV: 'test'
+      NODE_ENV: 'test',
+      SKIP_FLAKY_TEST_4_1: process.env.SKIP_FLAKY_TEST_4_1 || '',
+      YOUPI_ALLOW_PRIVATE_WEBHOOKS: 'true'
     },
     encoding: 'utf8'
   });
