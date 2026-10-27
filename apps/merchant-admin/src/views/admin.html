@@ -2990,7 +2990,7 @@
               <label style="display:block; font-size:0.82rem; font-weight:700; margin-bottom:0.35rem;">Merchant ID / Publishable Key (<code>data-youpi-key</code> &amp; <code>X-Merchant-Id</code>)</label>
               <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
                 <input id="settingMerchantId" type="text" readonly
-                  style="flex:1; min-width:260px; color:#38bdf8; font-family:monospace; font-weight:600;" />
+                  style="flex:1; min-width:260px; color:var(--info); font-family:monospace; font-weight:600;" />
                 <button type="button" class="btn btn-secondary" onclick="copyFieldValue('settingMerchantId', 'Publishable Merchant ID')"
                   style="padding:0.55rem 0.9rem; font-size:0.8rem;">📋 Copy</button>
               </div>
@@ -3001,11 +3001,11 @@
               <label style="display:block; font-size:0.82rem; font-weight:700; margin-bottom:0.35rem;">Secret Merchant API Key (<code>X-Merchant-Key</code>)</label>
               <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
                 <input id="settingMerchantApiKey" type="text" readonly
-                  style="flex:1; min-width:260px; color:#34d399; font-family:monospace; font-weight:600;" />
+                  style="flex:1; min-width:260px; color:var(--success); font-family:monospace; font-weight:600;" />
                 <button type="button" class="btn btn-secondary" onclick="copyFieldValue('settingMerchantApiKey', 'Merchant API Key')"
                   style="padding:0.55rem 0.9rem; font-size:0.8rem;">📋 Copy</button>
                 <button type="button" class="btn btn-secondary" onclick="rotateMerchantApiKey()"
-                  style="padding:0.55rem 0.9rem; font-size:0.8rem; border-color:#38bdf8; color:#38bdf8;">🔄 Generate / Rotate Key</button>
+                  style="padding:0.55rem 0.9rem; font-size:0.8rem; border-color:var(--info); color:var(--info);">🔄 Generate / Rotate Key</button>
               </div>
               <span style="font-size:0.72rem; color:var(--text-muted); display:block; margin-top:0.25rem;">Backend-only secret key used to authenticate server-to-server payment creation and status queries via the <code>X-Merchant-Key</code> header.</span>
             </div>
@@ -3213,7 +3213,7 @@
 
             <!-- Advanced Collapsible Configuration -->
             <details
-              style="background:rgba(15,23,42,0.4); border:1px solid var(--border); border-radius:0.5rem; padding:0.6rem 0.85rem;">
+              style="background:var(--bg-surface); border:1px solid var(--border); border-radius:0.5rem; padding:0.6rem 0.85rem;">
               <summary style="cursor:pointer; font-size:0.78rem; font-weight:700; color:var(--text-muted); user-select:none;">
                 ⚙️ Advanced OAuth Credentials &amp; Manual Override (Optional)
               </summary>
@@ -3438,7 +3438,7 @@
     <div class="modal-box" style="max-width:720px; max-height:85vh; overflow-y:auto;">
       <div
         style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
-        <h3 style="color:#fff; margin:0; font-size:1.15rem;">📖 Official Gmail API &amp; Refresh Token Guide</h3>
+        <h3 style="color:var(--text-heading); margin:0; font-size:1.15rem;">📖 Official Gmail API &amp; Refresh Token Guide</h3>
         <button class="btn btn-secondary" style="padding:0.25rem 0.5rem;" onclick="closeGmailGuideModal()">✕</button>
       </div>
       <div style="font-size:0.82rem; color:var(--text); line-height:1.6;">
@@ -3662,40 +3662,40 @@
   <!-- Modal: Create / Onboard New Merchant -->
   <div id="newMerchantModal" class="modal-overlay" hidden>
     <div class="modal-box" style="max-width:540px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid #1e293b; padding-bottom:0.75rem;">
-        <h3 style="color:#fff; margin:0; font-size:1.15rem;">🏪 Onboard New Merchant / Store</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; border-bottom:1px solid var(--border); padding-bottom:0.75rem;">
+        <h3 style="color:var(--text-heading); margin:0; font-size:1.15rem;">🏪 Onboard New Merchant / Store</h3>
         <button class="btn btn-secondary" style="padding:0.25rem 0.5rem;" onclick="closeNewMerchantModal()">✕</button>
       </div>
-      <div style="font-size:0.85rem; color:#cbd5e1; line-height:1.6;">
+      <div style="font-size:0.85rem; color:var(--text); line-height:1.6;">
         <div style="margin-bottom:1rem;">
-          <label style="display:block; font-size:0.82rem; font-weight:700; color:#e2e8f0; margin-bottom:0.35rem;">Store / Business Name *</label>
-          <input id="modalMerchantName" type="text" placeholder="e.g. Acme Supermart or Apex Retail" style="width:100%; background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:0.55rem; font-size:0.85rem;" oninput="syncModalSlug(this.value)" />
+          <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-heading); margin-bottom:0.35rem;">Store / Business Name *</label>
+          <input id="modalMerchantName" type="text" placeholder="e.g. Acme Supermart or Apex Retail" style="width:100%; background:var(--bg-input); border:1px solid var(--border-hover); color:var(--text); border-radius:6px; padding:0.55rem; font-size:0.85rem;" oninput="syncModalSlug(this.value)" />
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem;">
           <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:#e2e8f0; margin-bottom:0.35rem;">Merchant Slug</label>
-            <input id="modalMerchantSlug" type="text" placeholder="acme-supermart" style="width:100%; background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
+            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-heading); margin-bottom:0.35rem;">Merchant Slug</label>
+            <input id="modalMerchantSlug" type="text" placeholder="acme-supermart" style="width:100%; background:var(--bg-input); border:1px solid var(--border-hover); color:var(--text); border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
           </div>
           <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:#e2e8f0; margin-bottom:0.35rem;">UPI ID / VPA</label>
-            <input id="modalMerchantVpa" type="text" placeholder="e.g. acme@okhdfcbank" style="width:100%; background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
+            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-heading); margin-bottom:0.35rem;">UPI ID / VPA</label>
+            <input id="modalMerchantVpa" type="text" placeholder="e.g. acme@okhdfcbank" style="width:100%; background:var(--bg-input); border:1px solid var(--border-hover); color:var(--text); border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
           </div>
         </div>
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; margin-bottom:1rem;">
           <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:#e2e8f0; margin-bottom:0.35rem;">Contact Email</label>
-            <input id="modalMerchantEmail" type="email" placeholder="contact@acme.com" style="width:100%; background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
+            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-heading); margin-bottom:0.35rem;">Contact Email</label>
+            <input id="modalMerchantEmail" type="email" placeholder="contact@acme.com" style="width:100%; background:var(--bg-input); border:1px solid var(--border-hover); color:var(--text); border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
           </div>
           <div>
-            <label style="display:block; font-size:0.82rem; font-weight:700; color:#e2e8f0; margin-bottom:0.35rem;">Contact Phone</label>
-            <input id="modalMerchantPhone" type="tel" placeholder="9876543210" style="width:100%; background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
+            <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-heading); margin-bottom:0.35rem;">Contact Phone</label>
+            <input id="modalMerchantPhone" type="tel" placeholder="9876543210" style="width:100%; background:var(--bg-input); border:1px solid var(--border-hover); color:var(--text); border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
           </div>
         </div>
         <div style="margin-bottom:1.25rem;">
-          <label style="display:block; font-size:0.82rem; font-weight:700; color:#e2e8f0; margin-bottom:0.35rem;">Webhook Notification URL (Optional)</label>
-          <input id="modalMerchantWebhook" type="url" placeholder="https://acme.com/api/webhook" style="width:100%; background:#020617; border:1px solid #334155; color:#f8fafc; border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
+          <label style="display:block; font-size:0.82rem; font-weight:700; color:var(--text-heading); margin-bottom:0.35rem;">Webhook Notification URL (Optional)</label>
+          <input id="modalMerchantWebhook" type="url" placeholder="https://acme.com/api/webhook" style="width:100%; background:var(--bg-input); border:1px solid var(--border-hover); color:var(--text); border-radius:6px; padding:0.55rem; font-size:0.85rem;" />
         </div>
-        <div style="display:flex; justify-content:flex-end; gap:0.75rem; border-top:1px solid #1e293b; padding-top:1rem;">
+        <div style="display:flex; justify-content:flex-end; gap:0.75rem; border-top:1px solid var(--border); padding-top:1rem;">
           <button type="button" class="btn btn-secondary" onclick="closeNewMerchantModal()">Cancel</button>
           <button type="button" class="btn btn-primary" onclick="submitNewMerchant()">Create Merchant</button>
         </div>
