@@ -38,12 +38,6 @@ jobs:
           distribution: 'temurin'
           java-version: '17.0.13'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
-        with:
-          api-level: 34
-          ndk-version: r26c
-
       - name: Set up Node.js 24
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
