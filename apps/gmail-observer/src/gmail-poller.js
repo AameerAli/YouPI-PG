@@ -87,6 +87,7 @@ export class GmailPoller {
     this.degradedReason = null;
     this.lastBootCheckAt = null;
     this.bootRetryTimer = null;
+    this.bootVersion = 0;
     this.backoffDelayMs = 5000;
   }
 
@@ -127,6 +128,7 @@ export class GmailPoller {
    * @returns {Promise<{ success: boolean, state: string, reason?: string }>}
    */
   async startBootLifecycle() {
+    const bootVersion = ++this.bootVersion;
     this.lastBootCheckAt = new Date().toISOString();
 
     // 1. Validate receiving account ID
@@ -140,6 +142,7 @@ export class GmailPoller {
     if (!this.credentials?.refreshToken || !this.credentials?.clientId || !this.credentials?.clientSecret) {
       await this.fetchCredentialsFromPaymentApi();
     }
+    if (bootVersion !== this.bootVersion) return { success: false, state: this.lifecycleState };
 
     const { clientId, clientSecret, refreshToken } = this.credentials || {};
     if (!clientId || !clientSecret || !refreshToken) {
@@ -150,6 +153,7 @@ export class GmailPoller {
 
     // 3. Test token acquisition
     const token = await this.getAccessToken();
+    if (bootVersion !== this.bootVersion) return { success: false, state: this.lifecycleState };
     if (!token) {
       console.warn('[Gmail Observer Lifecycle] Degraded: Token acquisition/refresh failed.');
       this.scheduleBootRetry('TOKEN_REFRESH_FAILED');
@@ -347,6 +351,7 @@ export class GmailPoller {
   }
 
   stop() {
+    this.bootVersion++;
     this.clearBootRetryTimer();
     if (this.timer) {
       clearInterval(this.timer);
