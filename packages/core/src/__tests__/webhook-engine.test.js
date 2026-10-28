@@ -53,7 +53,7 @@ describe('Webhook Engine Integration Tests', () => {
     });
 
     await new Promise(resolve => {
-      receiverServer.listen(0, () => {
+      receiverServer.listen(0, '127.0.0.1', () => {
         receiverPort = receiverServer.address().port;
         resolve();
       });
@@ -71,7 +71,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'webhook-store',
       contactEmail: 'store@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook`,
       webhookSecret: 'test_secret_for_merchant_signatures_123'
     });
 
@@ -122,7 +122,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'utr-store',
       contactEmail: 'utr@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook-utr`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook-utr`,
       webhookSecret: 'test_secret_for_utr_signatures_123'
     });
 
@@ -171,7 +171,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'failing-store',
       contactEmail: 'fail@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook-fail`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook-fail`,
       webhookSecret: 'secret_abc_123'
     });
 
@@ -221,7 +221,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'retry-consistency-store',
       contactEmail: 'retry@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook-retry-consistency`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook-retry-consistency`,
       webhookSecret: 'test_secret_for_retry_consistency_123'
     });
 
@@ -265,7 +265,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'no-secret-store',
       contactEmail: 'nosecret@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook-no-secret`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook-no-secret`,
       webhookSecret: 'temp_secret'
     });
     // Explicitly set secret to empty string in DB to test missing secret guard
@@ -359,7 +359,7 @@ describe('Webhook Engine Integration Tests', () => {
         env: {
           ...process.env,
           CRASH_DB_PATH: dbPath,
-          CRASH_WEBHOOK_URL: `http://localhost:${hangPort}/webhook-crash`
+          CRASH_WEBHOOK_URL: `http://127.0.0.1:${hangPort}/webhook-crash`
         },
         stdio: 'ignore'
       });
@@ -367,9 +367,22 @@ describe('Webhook Engine Integration Tests', () => {
       // Wait until the first HTTP delivery request is in-flight at hangServer
       await firstAttemptSeen;
 
-      // Kill the child process with SIGKILL while the first webhook delivery is in flight
+      // Kill the child process with SIGKILL while the first webhook delivery is in flight.
+      // A SIGKILLed child can occasionally fail to emit 'exit' on CI (stuck inside libuv),
+      // which used to hang the whole test runner for 6 hours. Race the exit against a
+      // hard timeout and escalate to SIGTERM + closeAllConnections.
+      const exitPromise = new Promise((resolve) => child.once('exit', resolve));
       child.kill('SIGKILL');
-      await new Promise(resolve => child.once('exit', resolve));
+
+      const exitedInTime = await Promise.race([
+        exitPromise.then(() => true),
+        new Promise((resolve) => setTimeout(() => resolve(false), 30000).unref())
+      ]);
+      if (!exitedInTime) {
+        try { child.kill('SIGTERM'); } catch {}
+        try { hangServer.closeAllConnections(); } catch {}
+        try { child.unref(); } catch {}
+      }
 
       // Now open the SQLite DB in the parent (simulating API restart)
       const restartedDb = new Database({ dbPath });
@@ -408,6 +421,8 @@ describe('Webhook Engine Integration Tests', () => {
 
       restartedDb.close();
     } finally {
+      // Force-close any lingering sockets the SIGKILLed child left open, then close the server.
+      try { hangServer.closeAllConnections(); } catch {}
       await new Promise(cb => hangServer.close(cb));
       fs.rmSync(tmpDir, { recursive: true, force: true });
     }
@@ -419,7 +434,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'orphan-terminal-store',
       contactEmail: 'orphan@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook-orphan`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook-orphan`,
       webhookSecret: 'orphan_secret_key_123456'
     });
 
@@ -458,7 +473,7 @@ describe('Webhook Engine Integration Tests', () => {
       slug: 'utr-store-propagation',
       contactEmail: 'utr@example.com',
       contactPhone: '9876543210',
-      webhookUrl: `http://localhost:${receiverPort}/webhook-utr`,
+      webhookUrl: `http://127.0.0.1:${receiverPort}/webhook-utr`,
       webhookSecret: 'secret_utr_123'
     });
 
